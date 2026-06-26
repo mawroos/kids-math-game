@@ -29,7 +29,7 @@ export function useGameLogic() {
   const [achievement, setAchievement] = useState<string | null>(null);
 
   const startGame = useCallback(() => {
-    setQuestions(generateQuestions(40));
+    setQuestions(generateQuestions(30));
     setCurrentQuestionIndex(0);
     setScore(0);
     setStreak(0);

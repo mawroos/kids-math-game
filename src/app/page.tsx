@@ -6,8 +6,10 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useTimer } from '@/hooks/useTimer';
 import { Play, RotateCcw, Zap, Target, Star } from 'lucide-react';
 import useSound from 'use-sound';
+import dynamic from 'next/dynamic';
+import { Question } from '@/utils/mathEngine';
 
-export default function Home() {
+function Home() {
   const {
     gameState,
     score,
@@ -116,7 +118,7 @@ function GameScreen({
   onAnswer,
   onTimeout,
 }: {
-  currentQuestion: any;
+  currentQuestion: Question;
   currentIndex: number;
   totalQuestions: number;
   score: number;
@@ -161,6 +163,8 @@ function GameScreen({
     return () => stop();
   }, [currentQuestion, start, stop]);
 
+  if (!currentQuestion) return null;
+
   const handleKeyPress = (num: string) => {
     if (feedback) return; // Prevent input while showing feedback
     playClick();
@@ -182,6 +186,7 @@ function GameScreen({
   };
 
   const checkAnswer = (val: string) => {
+    if (feedback) return;
     stop();
     const isCorrect = parseInt(val) === currentQuestion.answer;
     const timeTaken = 5 - timeLeft;
@@ -409,3 +414,5 @@ function ScoreScreen({ score, onRestart }: { score: number; onRestart: () => voi
     </motion.div>
   );
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });

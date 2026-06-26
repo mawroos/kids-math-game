@@ -862,7 +862,7 @@ function GameScreen({
   const [playTick] = useSound(`${BASE_PATH}/sounds/tick.wav`, { volume: 0.2 });
   const [playClick] = useSound(`${BASE_PATH}/sounds/click.wav`, { volume: 0.2 });
 
-  const { timeLeft, start, stop, isActive, resetTimer } = useTimer(15, () => {
+  const { timeLeft, start, stop, isActive, resetTimer } = useTimer(9, () => {
     setFeedbackMsg(WRONG_MSGS[Math.floor(Math.random() * WRONG_MSGS.length)]);
     setFeedback('wrong');
     setMonsterAction('dodge');
@@ -915,7 +915,7 @@ function GameScreen({
     if (feedback) return;
     stop();
     const isCorrect = parseInt(val) === currentQuestion.answer;
-    const timeTaken = 15 - timeLeft;
+    const timeTaken = 9 - timeLeft;
 
     setFeedback(isCorrect ? 'correct' : 'wrong');
     if (isCorrect) {
@@ -942,8 +942,8 @@ function GameScreen({
     }, 1000);
   };
 
-  const isWarning = timeLeft <= 5;
-  const timerPct = (timeLeft / 15) * 100;
+  const isWarning = timeLeft <= 3;
+  const timerPct = (timeLeft / 9) * 100;
   const waveNum = Math.floor(currentIndex / 15) + 1;
 
   return (
@@ -983,7 +983,7 @@ function GameScreen({
       {/* Timer bar */}
       <div className="h-3 bg-gray-800 relative">
         <motion.div
-          className={`h-full transition-colors ${isWarning ? 'bg-red-500' : timeLeft <= 8 ? 'bg-yellow-400' : 'bg-green-400'}`}
+          className={`h-full transition-colors ${isWarning ? 'bg-red-500' : timeLeft <= 5 ? 'bg-yellow-400' : 'bg-green-400'}`}
           animate={{ width: `${timerPct}%` }}
           transition={{ duration: 1, ease: 'linear' }}
         />

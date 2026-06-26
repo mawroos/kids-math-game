@@ -113,7 +113,7 @@ export function useGameLogic() {
   );
 
   const handleTimeout = useCallback(() => {
-    handleAnswer(false, 15);
+    handleAnswer(false, 9);
   }, [handleAnswer]);
 
   const handleSkip = useCallback(() => {

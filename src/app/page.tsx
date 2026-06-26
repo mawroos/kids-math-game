@@ -645,7 +645,7 @@ function Home() {
     handleTimeout,
     handleSkip,
     powerUps,
-    usePowerUp,
+    activatePowerUp,
     doublePointsActive,
     waveJustCompleted,
     totalQuestions,
@@ -657,14 +657,14 @@ function Home() {
 
   const handlePowerUp = useCallback(
     (type: PowerUpType) => {
-      usePowerUp(type);
+      activatePowerUp(type);
       if (type === 'FREEZE_TIME' && freezeTimerFn) {
         freezeTimerFn();
       } else if (type === 'SKIP') {
         handleSkip();
       }
     },
-    [usePowerUp, freezeTimerFn, handleSkip]
+    [activatePowerUp, freezeTimerFn, handleSkip]
   );
 
   const registerFreezeTimer = useCallback((fn: () => void) => {

@@ -306,7 +306,7 @@ function Home() {
   } = useGameLogic();
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white font-comic overflow-hidden touch-none select-none">
+    <main className="min-h-dvh bg-slate-950 text-white font-comic overflow-hidden touch-none select-none">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900 via-slate-950 to-black -z-10" />
       <BackgroundStars />
 
@@ -354,7 +354,7 @@ function StartScreen({ onStart }: { onStart: () => void }) {
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, y: -60 }}
-      className="h-screen flex flex-col items-center justify-center p-6 space-y-10 relative"
+      className="h-dvh flex flex-col items-center justify-center p-6 space-y-10 relative"
     >
       {/* Decorative monsters */}
       <motion.div
@@ -549,7 +549,7 @@ function GameScreen({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`h-screen flex flex-col ${feedback === 'wrong' ? 'animate-shake' : ''}`}
+      className={`h-dvh flex flex-col ${feedback === 'wrong' ? 'animate-shake' : ''}`}
     >
       {/* Top Bar */}
       <div className="flex justify-between items-center px-4 py-3 bg-black/50 backdrop-blur-md border-b border-indigo-900">
@@ -763,7 +763,7 @@ function ScoreScreen({ score, onRestart }: { score: number; onRestart: () => voi
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-screen flex flex-col items-center justify-center p-6 space-y-8 bg-black/85 backdrop-blur-sm z-50 absolute inset-0 overflow-hidden"
+      className="h-dvh flex flex-col items-center justify-center p-6 space-y-8 bg-black/85 backdrop-blur-sm z-50 absolute inset-0 overflow-hidden"
     >
       {/* Spinning background monster */}
       <div className="absolute w-72 h-72 opacity-10 pointer-events-none">

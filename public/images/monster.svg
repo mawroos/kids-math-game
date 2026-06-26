@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="bodyGrad" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+      <stop offset="0%" stop-color="#ff7b00" />
+      <stop offset="100%" stop-color="#cc0000" />
+    </radialGradient>
+  </defs>
+  <!-- Body -->
+  <path d="M 50 150 C 20 150, 10 80, 50 40 C 90 0, 150 20, 160 80 C 170 140, 100 190, 50 150" fill="url(#bodyGrad)" />
+  <!-- Eye 1 -->
+  <circle cx="70" cy="70" r="20" fill="white" />
+  <circle cx="70" cy="70" r="8" fill="black" />
+  <!-- Eye 2 -->
+  <circle cx="120" cy="80" r="15" fill="white" />
+  <circle cx="120" cy="80" r="6" fill="black" />
+  <!-- Mouth -->
+  <path d="M 60 120 Q 90 140 130 110" stroke="black" stroke-width="8" stroke-linecap="round" fill="transparent" />
+  <!-- Teeth -->
+  <path d="M 70 125 L 80 135 L 90 127 L 100 135 L 110 125" fill="white" />
+</svg>

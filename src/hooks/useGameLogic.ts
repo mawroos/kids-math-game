@@ -39,7 +39,7 @@ export function useGameLogic() {
   );
 
   const handleTimeout = useCallback(() => {
-    handleAnswer(false, 5); // Timeout means wrong answer, took 5 seconds
+    handleAnswer(false, 15); // Timeout means wrong answer, took 15 seconds
   }, [handleAnswer]);
 
   return {

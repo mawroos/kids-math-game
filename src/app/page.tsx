@@ -47,8 +47,10 @@ function Home() {
   );
 }
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 function StartScreen({ onStart }: { onStart: () => void }) {
-  const [playStart] = useSound('/sounds/start.wav', { volume: 0.5 });
+  const [playStart] = useSound(`${BASE_PATH}/sounds/start.wav`, { volume: 0.5 });
 
   const handleStart = () => {
     playStart();
@@ -63,7 +65,7 @@ function StartScreen({ onStart }: { onStart: () => void }) {
       className="h-screen flex flex-col items-center justify-center p-6 space-y-12 relative"
     >
       <motion.img
-        src="/images/monster.svg"
+        src={`${BASE_PATH}/images/monster.svg`}
         alt="Monster"
         className="w-48 h-48 absolute top-10 left-10 opacity-50 hidden md:block"
         animate={{ y: [0, -20, 0], rotate: [0, 5, -5, 0] }}
@@ -71,7 +73,7 @@ function StartScreen({ onStart }: { onStart: () => void }) {
       />
 
       <motion.img
-        src="/images/monster.svg"
+        src={`${BASE_PATH}/images/monster.svg`}
         alt="Monster"
         className="w-32 h-32 absolute bottom-20 right-10 opacity-50 hidden md:block"
         animate={{ y: [0, 20, 0], scale: [1, 1.1, 1] }}
@@ -130,13 +132,13 @@ function GameScreen({
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [monsterAction, setMonsterAction] = useState<'idle' | 'hit' | 'dodge'>('idle');
 
-  const [playCorrect] = useSound('/sounds/correct.wav', { volume: 0.5 });
-  const [playWrong] = useSound('/sounds/wrong.wav', { volume: 0.5 });
-  const [playTick] = useSound('/sounds/tick.wav', { volume: 0.2 });
-  const [playClick] = useSound('/sounds/click.wav', { volume: 0.2 });
+  const [playCorrect] = useSound(`${BASE_PATH}/sounds/correct.wav`, { volume: 0.5 });
+  const [playWrong] = useSound(`${BASE_PATH}/sounds/wrong.wav`, { volume: 0.5 });
+  const [playTick] = useSound(`${BASE_PATH}/sounds/tick.wav`, { volume: 0.2 });
+  const [playClick] = useSound(`${BASE_PATH}/sounds/click.wav`, { volume: 0.2 });
 
-  // Timer setup (5 seconds)
-  const { timeLeft, start, stop, isActive } = useTimer(5, () => {
+  // Timer setup (15 seconds)
+  const { timeLeft, start, stop, isActive } = useTimer(15, () => {
     setFeedback('wrong');
     setMonsterAction('dodge');
     playWrong();
@@ -189,7 +191,7 @@ function GameScreen({
     if (feedback) return;
     stop();
     const isCorrect = parseInt(val) === currentQuestion.answer;
-    const timeTaken = 5 - timeLeft;
+    const timeTaken = 15 - timeLeft;
 
     setFeedback(isCorrect ? 'correct' : 'wrong');
     if (isCorrect) {
@@ -207,7 +209,7 @@ function GameScreen({
     }, 1000);
   };
 
-  const isWarning = timeLeft <= 2;
+  const isWarning = timeLeft <= 5;
 
   return (
     <motion.div
@@ -244,7 +246,7 @@ function GameScreen({
           <motion.div
             className={`h-full ${isWarning ? 'bg-red-500' : 'bg-green-400'}`}
             initial={{ width: '100%' }}
-            animate={{ width: `${(timeLeft / 5) * 100}%` }}
+            animate={{ width: `${(timeLeft / 15) * 100}%` }}
             transition={{ duration: 1, ease: 'linear' }}
           />
         </div>
@@ -272,7 +274,7 @@ function GameScreen({
             transition={monsterAction === 'idle' ? { repeat: Infinity, duration: 2 } : { duration: 0.5 }}
             className="w-32 h-32 md:w-48 md:h-48"
           >
-            <img src="/images/monster.svg" alt="Enemy Monster" className="w-full h-full drop-shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
+            <img src={`${BASE_PATH}/images/monster.svg`} alt="Enemy Monster" className="w-full h-full drop-shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
           </motion.div>
         </div>
 
@@ -352,8 +354,8 @@ function GameScreen({
 }
 
 function ScoreScreen({ score, onRestart }: { score: number; onRestart: () => void }) {
-  const [playEnd] = useSound('/sounds/end.wav', { volume: 0.5 });
-  const [playClick] = useSound('/sounds/click.wav', { volume: 0.2 });
+  const [playEnd] = useSound(`${BASE_PATH}/sounds/end.wav`, { volume: 0.5 });
+  const [playClick] = useSound(`${BASE_PATH}/sounds/click.wav`, { volume: 0.2 });
 
   useEffect(() => {
     playEnd();
@@ -371,7 +373,7 @@ function ScoreScreen({ score, onRestart }: { score: number; onRestart: () => voi
       className="h-screen flex flex-col items-center justify-center p-6 space-y-12 bg-black/80 backdrop-blur-sm z-50 absolute inset-0"
     >
       <motion.img
-        src="/images/monster.svg"
+        src={`${BASE_PATH}/images/monster.svg`}
         alt="Monster"
         className="w-64 h-64 absolute opacity-20"
         animate={{ rotate: 360 }}

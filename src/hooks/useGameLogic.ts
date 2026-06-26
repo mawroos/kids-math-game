@@ -1,7 +1,16 @@
 import { useState, useCallback } from 'react';
 import { generateQuestions, Question } from '../utils/mathEngine';
 
-export type GameState = 'start' | 'playing' | 'score';
+export type GameState = 'start' | 'countdown' | 'playing' | 'wave_complete' | 'score';
+export type PowerUpType = 'FREEZE_TIME' | 'DOUBLE_POINTS' | 'SKIP';
+
+export interface PowerUp {
+  type: PowerUpType;
+  used: boolean;
+}
+
+const WAVE_SIZE = 15;
+export const TOTAL_QUESTIONS = 45;
 
 function getMultiplier(streak: number): number {
   if (streak >= 8) return 3;
@@ -19,6 +28,12 @@ function getAchievement(newStreak: number): string | null {
   return null;
 }
 
+const INITIAL_POWERUPS: PowerUp[] = [
+  { type: 'FREEZE_TIME', used: false },
+  { type: 'DOUBLE_POINTS', used: false },
+  { type: 'SKIP', used: false },
+];
+
 export function useGameLogic() {
   const [gameState, setGameState] = useState<GameState>('start');
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -27,25 +42,58 @@ export function useGameLogic() {
   const [streak, setStreak] = useState(0);
   const [lastScoreGained, setLastScoreGained] = useState(0);
   const [achievement, setAchievement] = useState<string | null>(null);
+  const [powerUps, setPowerUps] = useState<PowerUp[]>(INITIAL_POWERUPS);
+  const [doublePointsActive, setDoublePointsActive] = useState(false);
+  const [currentWave, setCurrentWave] = useState(1);
+  const [waveJustCompleted, setWaveJustCompleted] = useState(0);
 
   const startGame = useCallback(() => {
-    setQuestions(generateQuestions(30));
+    setQuestions(generateQuestions(TOTAL_QUESTIONS));
     setCurrentQuestionIndex(0);
     setScore(0);
     setStreak(0);
     setLastScoreGained(0);
     setAchievement(null);
+    setPowerUps(INITIAL_POWERUPS.map((p) => ({ ...p })));
+    setDoublePointsActive(false);
+    setCurrentWave(1);
+    setWaveJustCompleted(0);
+    setGameState('countdown');
+  }, []);
+
+  const resumeFromWave = useCallback(() => {
     setGameState('playing');
   }, []);
 
+  const advanceQuestion = useCallback(
+    (nextIndex: number) => {
+      if (nextIndex >= TOTAL_QUESTIONS) {
+        setGameState('score');
+      } else if (nextIndex > 0 && nextIndex % WAVE_SIZE === 0) {
+        const waveNum = nextIndex / WAVE_SIZE;
+        setWaveJustCompleted(waveNum);
+        setCurrentWave(waveNum + 1);
+        setCurrentQuestionIndex(nextIndex);
+        setGameState('wave_complete');
+      } else {
+        setCurrentQuestionIndex(nextIndex);
+      }
+    },
+    []
+  );
+
   const handleAnswer = useCallback(
     (isCorrect: boolean, timeTaken: number) => {
+      const isLucky = questions[currentQuestionIndex]?.isLucky ?? false;
+
       if (isCorrect) {
         setStreak((prev) => {
           const newStreak = prev + 1;
           const multiplier = getMultiplier(prev);
           const speedBonus = timeTaken <= 2 ? 50 : timeTaken <= 5 ? 25 : 0;
-          const earned = Math.floor((100 + speedBonus) * multiplier);
+          let earned = Math.floor((100 + speedBonus) * multiplier);
+          if (isLucky) earned = Math.floor(earned * 2);
+          if (doublePointsActive) earned = Math.floor(earned * 2);
           setScore((s) => s + earned);
           setLastScoreGained(earned);
           const ach = getAchievement(newStreak);
@@ -57,18 +105,26 @@ export function useGameLogic() {
         setLastScoreGained(0);
       }
 
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex((prev) => prev + 1);
-      } else {
-        setGameState('score');
-      }
+      if (doublePointsActive) setDoublePointsActive(false);
+
+      advanceQuestion(currentQuestionIndex + 1);
     },
-    [currentQuestionIndex, questions.length]
+    [currentQuestionIndex, questions, doublePointsActive, advanceQuestion]
   );
 
   const handleTimeout = useCallback(() => {
     handleAnswer(false, 15);
   }, [handleAnswer]);
+
+  const handleSkip = useCallback(() => {
+    if (doublePointsActive) setDoublePointsActive(false);
+    advanceQuestion(currentQuestionIndex + 1);
+  }, [currentQuestionIndex, doublePointsActive, advanceQuestion]);
+
+  const usePowerUp = useCallback((type: PowerUpType) => {
+    setPowerUps((prev) => prev.map((p) => (p.type === type ? { ...p, used: true } : p)));
+    if (type === 'DOUBLE_POINTS') setDoublePointsActive(true);
+  }, []);
 
   const clearAchievement = useCallback(() => setAchievement(null), []);
 
@@ -84,7 +140,15 @@ export function useGameLogic() {
     achievement,
     clearAchievement,
     startGame,
+    resumeFromWave,
     handleAnswer,
     handleTimeout,
+    handleSkip,
+    powerUps,
+    usePowerUp,
+    doublePointsActive,
+    currentWave,
+    waveJustCompleted,
+    totalQuestions: TOTAL_QUESTIONS,
   };
 }

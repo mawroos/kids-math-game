@@ -18,6 +18,10 @@ export function useTimer(initialTime: number, onTimeout: () => void) {
     setIsActive(false);
   }, []);
 
+  const resetTimer = useCallback(() => {
+    setTimeLeft(initialTime);
+  }, [initialTime]);
+
   useEffect(() => {
     if (!isActive) return;
 
@@ -36,5 +40,5 @@ export function useTimer(initialTime: number, onTimeout: () => void) {
     return () => clearInterval(interval);
   }, [isActive]);
 
-  return { timeLeft, start, stop, isActive };
+  return { timeLeft, start, stop, isActive, resetTimer };
 }

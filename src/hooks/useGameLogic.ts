@@ -121,7 +121,7 @@ export function useGameLogic() {
     advanceQuestion(currentQuestionIndex + 1);
   }, [currentQuestionIndex, doublePointsActive, advanceQuestion]);
 
-  const usePowerUp = useCallback((type: PowerUpType) => {
+  const activatePowerUp = useCallback((type: PowerUpType) => {
     setPowerUps((prev) => prev.map((p) => (p.type === type ? { ...p, used: true } : p)));
     if (type === 'DOUBLE_POINTS') setDoublePointsActive(true);
   }, []);
@@ -145,7 +145,7 @@ export function useGameLogic() {
     handleTimeout,
     handleSkip,
     powerUps,
-    usePowerUp,
+    activatePowerUp,
     doublePointsActive,
     currentWave,
     waveJustCompleted,
